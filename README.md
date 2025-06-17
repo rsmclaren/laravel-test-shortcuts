@@ -15,3 +15,8 @@ A VS Code extension that provides shortcuts for running Laravel tests, making it
 ### 0.0.1
 
 Initial release including the `Run Artisan Test` and `Run Test at Cursor` features.
+
+
+## Attributions
+
+<a href="https://www.flaticon.com/free-icons/beaker" title="beaker icons">Beaker icons created by Freepik - Flaticon</a>

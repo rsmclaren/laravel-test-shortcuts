@@ -2,6 +2,8 @@
   "name": "laravel-test-shortcuts",
   "displayName": "Laravel Test Shortcuts",
   "description": "Run Laravel artisan tests from VSCode using handy shortcuts",
+  "publisher": "rsmclaren",
+  "icon": "images/icon.png",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.101.0"
