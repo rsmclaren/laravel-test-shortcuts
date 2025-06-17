@@ -29,9 +29,22 @@
     "commands": [
       {
         "command": "laravel-test-shortcuts.runPhpArtisanTest",
-        "title": "Run PHP Artisan Tests"
+        "title": "Run Artisan Test"
+      },
+      {
+        "command": "laravel-test-shortcuts.runSingleMethodTest",
+        "title": "Run Test at Cursor"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "laravel-test-shortcuts.runSingleMethodTest",
+          "when": "editorLangId == php",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

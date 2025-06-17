@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	if (!isLaravel) {
-		return; // Don't show the button if not a Laravel project
+		return; // Don't continue if not a Laravel project
 	}
 
 	const testButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 			testButton.text = `$(beaker) Run ${fileName}`;
 			testButton.tooltip = `Run php artisan test for ${fileName}`;
 		} else {
-			testButton.text = '$(beaker) Run artisan Tests';
+			testButton.text = '$(beaker) Run artisan test';
 			testButton.tooltip = 'Run php artisan test';
 		}
 	}
@@ -65,5 +65,56 @@ export function activate(context: vscode.ExtensionContext) {
 		terminal.show();
 	});
 
-	context.subscriptions.push(runTestCommand);
+
+	// run method test commmand
+	const runSingleMethodTest = vscode.commands.registerCommand('laravel-test-shortcuts.runSingleMethodTest', async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('No active editor');
+			return;
+		}
+
+		const document = editor.document;
+		const position = editor.selection.active;
+
+		// Get the line text at the cursor
+		const lineText = document.lineAt(position.line).text;
+
+		// Try to match a PHP function definition (simple regex)
+		let functionName: string | null = null;
+		const functionRegex = /function\s+([a-zA-Z0-9_]+)\s*\(/;
+		if (functionRegex.test(lineText)) {
+			functionName = lineText.match(functionRegex)?.[1] || null;
+		} else {
+			// Search upwards for the nearest function definition
+			for (let i = position.line; i >= 0; i--) {
+				const text = document.lineAt(i).text;
+				if (functionRegex.test(text)) {
+					functionName = text.match(functionRegex)?.[1] || null;
+					break;
+				}
+			}
+		}
+
+		if (!functionName) {
+			vscode.window.showErrorMessage('Could not find a test function at the cursor.');
+			return;
+		}
+
+		// Get relative path to the file
+		const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+		if (!workspaceFolder) {
+			vscode.window.showErrorMessage('Could not determine workspace folder.');
+			return;
+		}
+		const relativePath = path.relative(workspaceFolder.uri.fsPath, document.fileName);
+
+		// Run the test with --filter
+		const command = `php artisan test "${relativePath}" --filter ${functionName}`;
+		const terminal = vscode.window.createTerminal('PHP Artisan Test');
+		terminal.sendText(command);
+		terminal.show();
+	});
+
+	context.subscriptions.push(runTestCommand, runSingleMethodTest);
 }
