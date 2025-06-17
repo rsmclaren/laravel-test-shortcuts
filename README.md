@@ -1,4 +1,4 @@
-# Laravel Test Shortcuts README
+# Laravel Test Shortcuts
 
 A VS Code extension that provides shortcuts for running Laravel tests, making it easier to execute tests directly from the editor.
 
